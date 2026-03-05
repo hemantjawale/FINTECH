@@ -135,136 +135,244 @@ export function Dashboard() {
                 </div>
 
                 <div className={styles.content}>
-                    <div className={`${styles.statsGrid} animate-fade-in`}>
-                        <div className={styles.statCard}>
-                            <div className={styles.statHeader}>
-                                <span>Total Payroll (INR)</span>
-                                <Globe size={20} color="var(--primary)" />
-                            </div>
-                            <div className={styles.statValue}>{formatINR(totalPayroll)}</div>
-                            <div className={styles.statChange}>
-                                <ChevronUp size={16} className={styles.positive} />
-                                <span className={styles.positive}>5.2%</span>
-                                <span className="text-secondary" style={{ marginLeft: '4px' }}>vs last month</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.statCard}>
-                            <div className={styles.statHeader}>
-                                <span>Active States</span>
-                                <Map size={20} color="var(--accent)" />
-                            </div>
-                            <div className={styles.statValue}>5</div>
-                            <div className={styles.statChange}>
-                                <span className={styles.positive}>Across India</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.statCard}>
-                            <div className={styles.statHeader}>
-                                <span>Auto-Withheld Taxes (TDS)</span>
-                                <PieChart size={20} color="var(--secondary)" />
-                            </div>
-                            <div className={styles.statValue}>{formatINR(totalTax)}</div>
-                            <div className={styles.statChange}>
-                                <span>Calculated per New Tax Regime</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`${styles.panelGrid} animate-fade-in`} style={{ animationDelay: '0.1s' }}>
-                        {/* Employee List */}
-                        <div className={styles.panel}>
-                            <div className={styles.panelTitle}>
-                                Distributed Team Payroll
-                                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>
-                                    TDS dynamically calculated
-                                </span>
-                            </div>
-
-                            <div className={styles.employeeList}>
-                                {employeesWithTax.map(emp => (
-                                    <div key={emp.id} className={styles.employeeItem}>
-                                        <div className={styles.employeeInfo}>
-                                            <div className={styles.avatar} style={{ width: 36, height: 36, fontSize: '0.9rem' }}>
-                                                {emp.name.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <div style={{ fontWeight: 600 }}>{emp.name}</div>
-                                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{emp.role} • {emp.state}</div>
-                                            </div>
-                                        </div>
-
-                                        <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                                {formatINR(emp.amount)}
-                                                <span className={styles.currencyPill}>Gross</span>
-                                            </div>
-                                            <div style={{ fontSize: '0.8rem', color: '#f59e0b', marginTop: '4px' }}>
-                                                TDS: {formatINR(emp.tax)} | Net: {formatINR(emp.net)}
-                                            </div>
-                                        </div>
+                    {activeTab === 'payroll' && (
+                        <>
+                            <div className={`${styles.statsGrid} animate-fade-in`}>
+                                <div className={styles.statCard}>
+                                    <div className={styles.statHeader}>
+                                        <span>Total Payroll (INR)</span>
+                                        <Globe size={20} color="var(--primary)" />
                                     </div>
-                                ))}
-                            </div>
+                                    <div className={styles.statValue}>{formatINR(totalPayroll)}</div>
+                                    <div className={styles.statChange}>
+                                        <ChevronUp size={16} className={styles.positive} />
+                                        <span className={styles.positive}>5.2%</span>
+                                        <span className="text-secondary" style={{ marginLeft: '4px' }}>vs last month</span>
+                                    </div>
+                                </div>
 
-                            <button
-                                className={`btn ${processed ? 'btn-secondary' : 'btn-primary'} ${styles.actionBtn}`}
-                                onClick={handleRunPayroll}
-                                disabled={isProcessing || processed}
-                            >
-                                {isProcessing ? <Clock size={20} className="spin" /> : <CreditCard size={20} />}
-                                {processed ? 'Payroll Scheduled Successfully!' : 'Run B2B Batch Payroll'}
-                            </button>
-                        </div>
+                                <div className={styles.statCard}>
+                                    <div className={styles.statHeader}>
+                                        <span>Active States</span>
+                                        <Map size={20} color="var(--accent)" />
+                                    </div>
+                                    <div className={styles.statValue}>5</div>
+                                    <div className={styles.statChange}>
+                                        <span className={styles.positive}>Across India</span>
+                                    </div>
+                                </div>
 
-                        {/* Quick Actions / Info */}
-                        <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div className={styles.taxAlert}>
-                                <div style={{ fontWeight: 600, color: '#b45309', marginBottom: '4px' }}>Tax Regime Alert</div>
-                                <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
-                                    The new tax regime applies by default. TDS has been dynamically calculated for your employees. Those under ₹7 LPA have 0 TDS.
+                                <div className={styles.statCard}>
+                                    <div className={styles.statHeader}>
+                                        <span>Auto-Withheld Taxes (TDS)</span>
+                                        <PieChart size={20} color="var(--secondary)" />
+                                    </div>
+                                    <div className={styles.statValue}>{formatINR(totalTax)}</div>
+                                    <div className={styles.statChange}>
+                                        <span>Calculated per New Tax Regime</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                <div className={styles.panelTitle} style={{ marginBottom: '16px' }}>Virtual Bank Accounts</div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-                                    Generate a dedicated virtual account to fund this payroll run instantly without banking fees.
+                            <div className={`${styles.panelGrid} animate-fade-in`} style={{ animationDelay: '0.1s' }}>
+                                {/* Employee List */}
+                                <div className={styles.panel}>
+                                    <div className={styles.panelTitle}>
+                                        Distributed Team Payroll
+                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>
+                                            TDS dynamically calculated
+                                        </span>
+                                    </div>
+
+                                    <div className={styles.employeeList}>
+                                        {employeesWithTax.map(emp => (
+                                            <div key={emp.id} className={styles.employeeItem}>
+                                                <div className={styles.employeeInfo}>
+                                                    <div className={styles.avatar} style={{ width: 36, height: 36, fontSize: '0.9rem' }}>
+                                                        {emp.name.charAt(0)}
+                                                    </div>
+                                                    <div>
+                                                        <div style={{ fontWeight: 600 }}>{emp.name}</div>
+                                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{emp.role} • {emp.state}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                                                        {formatINR(emp.amount)}
+                                                        <span className={styles.currencyPill}>Gross</span>
+                                                    </div>
+                                                    <div style={{ fontSize: '0.8rem', color: '#f59e0b', marginTop: '4px' }}>
+                                                        TDS: {formatINR(emp.tax)} | Net: {formatINR(emp.net)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        className={`btn ${processed ? 'btn-secondary' : 'btn-primary'} ${styles.actionBtn}`}
+                                        onClick={handleRunPayroll}
+                                        disabled={isProcessing || processed}
+                                    >
+                                        {isProcessing ? <Clock size={20} className="spin" /> : <CreditCard size={20} />}
+                                        {processed ? 'Payroll Scheduled Successfully!' : 'Run B2B Batch Payroll'}
+                                    </button>
                                 </div>
 
-                                {virtualAccount ? (
-                                    <div style={{ background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--accent)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent)', marginBottom: '12px', fontWeight: 600 }}>
-                                            <CheckCircle2 size={18} /> Account Generated
-                                        </div>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Account Number</div>
-                                        <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', letterSpacing: '1px', marginTop: '2px', marginBottom: '12px' }}>
-                                            {virtualAccount.acc}
-                                        </div>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>IFSC Code</div>
-                                        <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', letterSpacing: '1px', marginTop: '2px' }}>
-                                            {virtualAccount.ifsc}
+                                {/* Quick Actions / Info */}
+                                <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                    <div className={styles.taxAlert}>
+                                        <div style={{ fontWeight: 600, color: '#b45309', marginBottom: '4px' }}>Tax Regime Alert</div>
+                                        <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
+                                            The new tax regime applies by default. TDS has been dynamically calculated for your employees. Those under ₹7 LPA have 0 TDS.
                                         </div>
                                     </div>
-                                ) : (
-                                    <div style={{ marginTop: 'auto', background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                                        <FileText size={32} color="var(--text-secondary)" style={{ margin: '0 auto 12px' }} />
-                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>No active funding account for this batch.</p>
-                                        <button
-                                            className="btn btn-secondary"
-                                            style={{ width: '100%' }}
-                                            onClick={generateVirtualAccount}
-                                            disabled={generatingVirtual}
-                                        >
-                                            {generatingVirtual ? <RefreshCw size={18} className="spin" /> : <CreditCard size={18} />}
-                                            {generatingVirtual ? 'Generating...' : 'Generate Account'}
-                                        </button>
+
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                        <div className={styles.panelTitle} style={{ marginBottom: '16px' }}>Virtual Bank Accounts</div>
+                                        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                                            Generate a dedicated virtual account to fund this payroll run instantly without banking fees.
+                                        </div>
+
+                                        {virtualAccount ? (
+                                            <div style={{ background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--accent)' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent)', marginBottom: '12px', fontWeight: 600 }}>
+                                                    <CheckCircle2 size={18} /> Account Generated
+                                                </div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Account Number</div>
+                                                <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', letterSpacing: '1px', marginTop: '2px', marginBottom: '12px' }}>
+                                                    {virtualAccount.acc}
+                                                </div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>IFSC Code</div>
+                                                <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', letterSpacing: '1px', marginTop: '2px' }}>
+                                                    {virtualAccount.ifsc}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div style={{ marginTop: 'auto', background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+                                                <FileText size={32} color="var(--text-secondary)" style={{ margin: '0 auto 12px' }} />
+                                                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>No active funding account for this batch.</p>
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    style={{ width: '100%' }}
+                                                    onClick={generateVirtualAccount}
+                                                    disabled={generatingVirtual}
+                                                >
+                                                    {generatingVirtual ? <RefreshCw size={18} className="spin" /> : <CreditCard size={18} />}
+                                                    {generatingVirtual ? 'Generating...' : 'Generate Account'}
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {activeTab === 'taxes' && (
+                        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div className={styles.statsGrid}>
+                                <div className={styles.statCard}>
+                                    <div className={styles.statHeader}><span>Total TDS Deducted</span><PieChart size={20} color="var(--primary)" /></div>
+                                    <div className={styles.statValue}>{formatINR(totalTax)}</div>
+                                </div>
+                                <div className={styles.statCard}>
+                                    <div className={styles.statHeader}><span>Tax Challan Status</span><CheckCircle2 size={20} color="var(--accent)" /></div>
+                                    <div className={styles.statValue}>Verified</div>
+                                </div>
+                            </div>
+                            <div className={styles.panel}>
+                                <div className={styles.panelTitle}>Employee Tax Breakdown (New Tax Regime)</div>
+                                <div className={styles.employeeList}>
+                                    {employeesWithTax.map(emp => (
+                                        <div key={emp.id} className={styles.employeeItem}>
+                                            <div className={styles.employeeInfo}>
+                                                <div className={styles.avatar} style={{ width: 36, height: 36, fontSize: '0.9rem' }}>{emp.name.charAt(0)}</div>
+                                                <div>
+                                                    <div style={{ fontWeight: 600 }}>{emp.name}</div>
+                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Gross: {formatINR(emp.amount)} • TDS: {formatINR(emp.tax)}</div>
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'right' }}>
+                                                <button className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>Download Form 16</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {activeTab === 'ibans' && (
+                        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div className={styles.panelGrid}>
+                                <div className={styles.panel}>
+                                    <div className={styles.panelTitle}>Active Virtual Accounts</div>
+                                    {virtualAccount ? (
+                                        <div style={{ background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--accent)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent)', marginBottom: '12px', fontWeight: 600 }}>
+                                                <CheckCircle2 size={18} /> Active Receiving Account
+                                            </div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Account Number</div>
+                                            <div style={{ fontFamily: 'monospace', fontSize: '1.2rem', letterSpacing: '1px', marginTop: '4px', marginBottom: '16px' }}>
+                                                {virtualAccount.acc}
+                                            </div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>IFSC Code</div>
+                                            <div style={{ fontFamily: 'monospace', fontSize: '1.2rem', letterSpacing: '1px', marginTop: '4px', marginBottom: '16px' }}>
+                                                {virtualAccount.ifsc}
+                                            </div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Bank Partner</div>
+                                            <div style={{ fontFamily: 'monospace', fontSize: '1.1rem', letterSpacing: '1px', marginTop: '4px' }}>
+                                                YES BANK LTD.
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ background: 'var(--surface-light)', padding: '40px 20px', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+                                            <FileText size={48} color="var(--text-secondary)" style={{ margin: '0 auto 16px' }} />
+                                            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>No active funding account currently generated.</p>
+                                            <button
+                                                className="btn btn-primary"
+                                                onClick={generateVirtualAccount}
+                                                disabled={generatingVirtual}
+                                            >
+                                                {generatingVirtual ? <RefreshCw size={20} className="spin" /> : <CreditCard size={20} />}
+                                                {generatingVirtual ? 'Generating Account...' : 'Generate Virtual Account'}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div className={styles.panelTitle}>About Virtual Accounts</div>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                                        Virtual Accounts allow you to directly accept domestic IMPS, NEFT, and RTGS payments in India without needing to setup complex banking integrations or pay high cross-border transaction fees.
+                                    </p>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                                        Each account generated acts as a dedicated treasury bucket for executing your automated employer payroll batch operations seamlessly.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'forex' && (
+                        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <div className={styles.panel}>
+                                <div className={styles.panelTitle}>Compliance & Forex Tracking</div>
+                                <p style={{ color: 'var(--text-secondary)' }}>All transactions are audited for FEMA compliance and forex rates are automatically locked 24 hours prior to batch execution.</p>
+                                <div style={{ marginTop: '24px', background: 'var(--surface-light)', padding: '20px', borderRadius: 'var(--radius-md)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--glass-border)', paddingBottom: '12px', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-secondary)' }}>Locked Rate (USD to INR)</span>
+                                        <span style={{ fontWeight: 'bold' }}>₹82.94</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ color: 'var(--text-secondary)' }}>Compliance Status</span>
+                                        <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>All Clear</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

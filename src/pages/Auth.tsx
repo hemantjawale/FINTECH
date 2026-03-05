@@ -54,7 +54,7 @@ export function Auth() {
                 <div className={`${styles.formWrapper} animate-fade-in`}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
                         <Globe2 size={32} color="var(--primary)" />
-                        <h2 className="gradient-text" style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>BorderPay</h2>
+                        <h2 className="gradient-text" style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>BorderPay India</h2>
                     </div>
 
                     <h1 className={styles.title}>
